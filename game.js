@@ -4,13 +4,27 @@ let userClickedPattern = []
 let startGame = false
 let level = 0
 
-$(document).keypress(() => {
-     if (!startGame) {
-       nextSequence();
-       startGame = true;
-       $("button").attr("disabled", false);
-     }
-})
+if(window.innerWidth <= 768){
+  $("h1").text("Touch the screen to start");
+}
+
+function startGameHandler() {
+  if (!startGame) {
+    nextSequence();
+    startGame = true;
+    $("button").attr("disabled", false);
+
+    $(document).off("keypress click touchstart");
+  } 
+}
+
+function enableStartEvents() {
+  $(document).on("keypress click touchstart", () => {
+    startGameHandler();
+  });
+}
+
+enableStartEvents();
 
 function nextSequence() {
     level++
@@ -65,9 +79,15 @@ function checkAnswer(currentIndex) {
    
     } 
     else {
-        playSound("wrong")
+      playSound("wrong")
 
-      $("h1").text("Game Over, Press Any Key to Restart")
+      if (window.innerWidth <= 768) {
+        $("h1").text("Game Over, Touch to Restart")
+      }
+      else{
+         $("h1").text("Game Over, Press Any Key to Restart")
+      }
+
       $("button").attr("disabled", true)
 
       $("body").addClass("game-over")
@@ -85,4 +105,8 @@ function startOver() {
     level = 0
     gamePattern = []
     startGame = false
+
+    setTimeout(() => {
+    enableStartEvents();
+  }, 100);
 }
