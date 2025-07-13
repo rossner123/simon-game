@@ -8,6 +8,8 @@ if(window.innerWidth <= 768){
   $("h1").text("Touch the screen to start");
 }
 
+updateHighScoreText();
+
 function startGameHandler() {
   if (!startGame) {
     nextSequence();
@@ -98,10 +100,17 @@ function checkAnswer(currentIndex) {
 
       startOver()
     }
- 
 }
 
 function startOver() {
+    let highScore = parseInt(localStorage.getItem("highScore")) || 0;
+
+    if(highScore < level){
+      localStorage.setItem("highScore", level);
+    }
+
+    updateHighScoreText();
+
     level = 0
     gamePattern = []
     startGame = false
@@ -109,4 +118,9 @@ function startOver() {
     setTimeout(() => {
     enableStartEvents();
   }, 100);
+}
+
+function updateHighScoreText() {
+  let savedScore = localStorage.getItem("highScore") || 0
+  $("#high-score").text(`High Score: ${savedScore}`)
 }
